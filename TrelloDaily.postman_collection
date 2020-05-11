@@ -1,0 +1,326 @@
+{
+	"info": {
+		"_postman_id": "e58004f9-993c-44d6-bec1-a40feaef9456",
+		"name": "Trello Daily",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1 Post",
+			"item": [
+				{
+					"name": "Trello Create Board Name Increment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "76a2c97d-9f58-47e2-94c7-86d7b4579e47",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const response = pm.response.json();",
+									"",
+									"pm.test(\"Board name was created\", function () {",
+									"    pm.expect(response.name).to.eql(pm.environment.get(\"boardName\"));",
+									"    pm.globals.set(\"trelloIdBoard\", response.id);",
+									"});",
+									"",
+									"pm.test(\"Board name was closed\", function () {",
+									"    pm.expect(response.closed).to.eql(false);",
+									"});",
+									"",
+									"pm.test(\"Board should be private\", function () {",
+									"    pm.expect(response.prefs.permissionLevel).to.eql(\"private\");",
+									"});",
+									"",
+									"console.log(\"Response\");",
+									"console.log(response);",
+									"",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "3f07dfbe-0e9d-44a4-87f1-696f887fd08b",
+								"exec": [
+									"",
+									"var lastId = pm.environment.get(\"lastBoardId\");",
+									"",
+									"lastBoardIdString = String(parseInt(lastId)+1);",
+									"",
+									"pm.environment.set(\"boardName\", \"My Board \" + lastBoardIdString);",
+									"",
+									"pm.environment.set(\"lastBoardId\",lastBoardIdString)",
+									"",
+									"console.log(`${pm.info.requestName} - From the pre-request script`);",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://{{url}}/1/boards/?name={{boardName}}&token={{trelloToken}}&key={{trelloKey}}&defaultListss=false",
+							"protocol": "https",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"1",
+								"boards",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "{{boardName}}"
+								},
+								{
+									"key": "token",
+									"value": "{{trelloToken}}"
+								},
+								{
+									"key": "key",
+									"value": "{{trelloKey}}"
+								},
+								{
+									"key": "defaultListss",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Trello Create Board with List TODO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "df147393-bed2-4365-a1f1-c4ae761b8c78",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const response = pm.response.json();",
+									"",
+									"pm.test(\"New List Name is TODO\", function () {",
+									"    pm.expect(response.name).to.eql(\"TODO\");",
+									"});",
+									"",
+									"pm.test(\"New List is not Closed\", function () {",
+									"    pm.expect(response.closed).to.eql(false);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "bf04d7a0-7a32-420e-ba01-e3b4beca9352",
+								"exec": [
+									"console.log(`${pm.info.requestName} - From the pre-request script`);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://{{url}}/1/lists?token=146d81bd0851c57fe89989a96e71ed45cc87d2fa459043c8cb3decb254ab2d8e&key=6b9035368cf100b894a30d76607cea4a&name=TODO&idBoard={{trelloIdBoard}}",
+							"protocol": "https",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"1",
+								"lists"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "146d81bd0851c57fe89989a96e71ed45cc87d2fa459043c8cb3decb254ab2d8e"
+								},
+								{
+									"key": "key",
+									"value": "6b9035368cf100b894a30d76607cea4a"
+								},
+								{
+									"key": "name",
+									"value": "TODO"
+								},
+								{
+									"key": "idBoard",
+									"value": "{{trelloIdBoard}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Trello Create Board with List  DONE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "df147393-bed2-4365-a1f1-c4ae761b8c78",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const response = pm.response.json();",
+									"",
+									"pm.test(\"New List Name is DONE\", function () {",
+									"",
+									"    pm.expect(response.name).to.eql(\"DONE\");",
+									"});",
+									"",
+									"pm.test(\"New List is not Closed\", function () {",
+									"    pm.expect(response.closed).to.eql(false);",
+									"});",
+									"",
+									"pm.test(\"Done List created in Board My New Board\", function () {",
+									"  pm.expect(response.idBoard).to.eql(pm.globals.get(\"trelloIdBoard\"));",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "7ded417b-97fe-497d-99f8-79b5699b8b00",
+								"exec": [
+									"console.log(`${pm.info.requestName} - From the pre-request script`);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "https://{{url}}/1/lists?token=146d81bd0851c57fe89989a96e71ed45cc87d2fa459043c8cb3decb254ab2d8e&key=6b9035368cf100b894a30d76607cea4a&name=DONE&idBoard={{trelloIdBoard}}",
+							"protocol": "https",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"1",
+								"lists"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "146d81bd0851c57fe89989a96e71ed45cc87d2fa459043c8cb3decb254ab2d8e"
+								},
+								{
+									"key": "key",
+									"value": "6b9035368cf100b894a30d76607cea4a"
+								},
+								{
+									"key": "name",
+									"value": "DONE"
+								},
+								{
+									"key": "idBoard",
+									"value": "{{trelloIdBoard}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "2 Delete",
+			"item": [
+				{
+					"name": "Delete Trello Board",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2a49c8b2-1f63-44a6-a23f-41325053017b",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.globals.unset(\"trelloIdBoard\")"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "f02356e4-e75d-4932-8ee6-4d2710893e6e",
+								"exec": [
+									"console.log(`${pm.info.requestName} - From the pre-request script`);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://{{url}}/1/boards/{{trelloIdBoard}}?token={{trelloToken}}&key={{trelloKey}}&idboard={{trelloIdBoard}}",
+							"protocol": "https",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"1",
+								"boards",
+								"{{trelloIdBoard}}"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{trelloToken}}"
+								},
+								{
+									"key": "key",
+									"value": "{{trelloKey}}"
+								},
+								{
+									"key": "idboard",
+									"value": "{{trelloIdBoard}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
